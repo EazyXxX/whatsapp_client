@@ -107,16 +107,67 @@ export const checkInstanceAuthStatus = async (
   try {
     const response = await axios.get(
       `${API_URL}/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`,
-
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
-
     return response.data.stateInstance === "authorized";
   } catch (err) {
-    console.error("Error checking instance status:", err);
+    console.error("Error checking instance auth status:", err);
+  }
+};
+
+export const getInstanceSettings = async (
+  idInstance: string,
+  apiTokenInstance: string
+) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/waInstance${idInstance}/getSettings/${apiTokenInstance}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Error getting instance settings:", err);
+  }
+};
+
+export const setInitialInstanceSettings = async (
+  idInstance: string,
+  apiTokenInstance: string
+) => {
+  try {
+    const { stateWebhook, outgoingWebhook, incomingWebhook } =
+      await getInstanceSettings(idInstance, apiTokenInstance);
+    if (
+      stateWebhook === "yes" ||
+      outgoingWebhook === "yes" ||
+      incomingWebhook === "yes"
+    ) {
+      return;
+    }
+    const response = await axios.get(
+      `${API_URL}/waInstance${idInstance}/setSettings/${apiTokenInstance}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          outgoingWebhook: "yes",
+          stateWebhook: "yes",
+          incomingWebhook: "yes",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (err) {
+    console.error("Error configuring initial instance settings:", err);
   }
 };

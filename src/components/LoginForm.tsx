@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { validateCredentials } from "../api/greenApi";
+import {
+  setInitialInstanceSettings,
+  validateCredentials,
+} from "../api/greenApi";
 import { Loader2 } from "lucide-react";
 
 export const LoginForm: React.FC = () => {
@@ -27,6 +30,7 @@ export const LoginForm: React.FC = () => {
         setStoreidInstance(idInstance);
         setStoreapiTokenInstance(apiTokenInstance);
         setIsAuthenticated(true);
+        setInitialInstanceSettings(idInstance, apiTokenInstance);
       } else {
         setError(
           "Invalid credentials. Please check your idInstance and apiTokenInstance"
