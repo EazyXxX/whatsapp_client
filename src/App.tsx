@@ -37,7 +37,22 @@ function App() {
         );
         if (notification && notification.body) {
           const { receiptId, body } = notification;
-          //TODO add isRead case logic for sent messages
+
+          //NOTE Somehow, there are no notifications being received when I read my own self-sent messages.
+          // I guess that's because there are no such notifications for chatting with myrself
+          // (and I can't send messages to other accounts because of my free developer api tariff)
+          // That is sad, cause I can't test out my logic for checking 'read' messages status :(
+
+          //TODO add 'read' messages status check
+          // isRead case logic for sent messages
+          // if (
+          //   body?.typeWebhook === "outgoingMessageStatus" &&
+          //   body.status === "sent"
+          // ) {
+          //   setMessageRead(body.idMessage);
+          //   return;
+          // }
+
           if (
             body.typeWebhook === "outgoingMessageReceived" &&
             body.messageData?.typeMessage === "textMessage" &&
@@ -50,7 +65,7 @@ function App() {
                 text: body.messageData.textMessageData.textMessage,
                 timestamp: Date.now(),
                 isOutgoing: false,
-                //TODO add logic for received messages isRead status
+                //TODO add logic for received messages 'read' status
                 isRead: true,
               });
             }

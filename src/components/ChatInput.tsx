@@ -21,7 +21,7 @@ export const ChatInput: React.FC = () => {
         message
       );
       addMessage({
-        id: sentMessage?.idMessage || Date.now().toString(),
+        id: sentMessage.idMessage || Date.now().toString(),
         text: message,
         timestamp: Date.now(),
         isOutgoing: true,

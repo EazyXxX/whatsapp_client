@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useChatStore } from "../store/chatStore";
 
 export const MessageList: React.FC = () => {
   const { currentChat } = useChatStore();
+
+  const uniqueMessages = useMemo(() => {
+    return currentChat?.messages.filter((message, index, arr) => {
+      return arr.findIndex((msg) => msg.id === message.id) === index;
+    });
+  }, [currentChat?.messages]);
 
   if (!currentChat) {
     return (
@@ -14,7 +20,7 @@ export const MessageList: React.FC = () => {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#efeae2]">
-      {currentChat.messages.map((message) => (
+      {(uniqueMessages || []).map((message) => (
         <div
           key={message.id}
           className={`flex ${
