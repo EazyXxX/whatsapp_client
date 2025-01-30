@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const validateCredentials = async (
   idInstance: string,
@@ -97,5 +97,26 @@ export const deleteNotification = async (
     );
   } catch (err) {
     console.error("Error deleting notification:", err);
+  }
+};
+
+export const checkInstanceAuthStatus = async (
+  idInstance: string,
+  apiTokenInstance: string
+) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`,
+
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data.stateInstance === "authorized";
+  } catch (err) {
+    console.error("Error checking instance status:", err);
   }
 };

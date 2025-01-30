@@ -14,7 +14,7 @@ export interface AuthState {
   idInstance: string;
   apiTokenInstance: string;
   isAuthenticated: boolean;
-  setidInstance: (idInstance: string) => void;
-  setapiTokenInstance: (apiTokenInstance: string) => void;
+  setIdInstance: (idInstance: string) => void;
+  setApiTokenInstance: (apiTokenInstance: string) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
 }

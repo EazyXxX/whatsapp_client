@@ -10,8 +10,8 @@ export const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    setidInstance: setStoreidInstance,
-    setapiTokenInstance: setStoreapiTokenInstance,
+    setIdInstance: setStoreidInstance,
+    setApiTokenInstance: setStoreapiTokenInstance,
     setIsAuthenticated,
   } = useAuthStore();
 

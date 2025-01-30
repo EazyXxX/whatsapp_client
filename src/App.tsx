@@ -5,26 +5,36 @@ import { MessageList } from "./components/MessageList";
 import { ChatInput } from "./components/ChatInput";
 import { useAuthStore } from "./store/authStore";
 import { useChatStore } from "./store/chatStore";
-import { receiveNotification, deleteNotification } from "./api/greenApi";
+import {
+  receiveNotification,
+  deleteNotification,
+  checkInstanceAuthStatus,
+} from "./api/greenApi";
 
 function App() {
-  const { isAuthenticated, idInstance, apiTokenInstance } = useAuthStore();
+  const { isAuthenticated, setIsAuthenticated, idInstance, apiTokenInstance } =
+    useAuthStore();
   const { currentChat, addMessage } = useChatStore();
 
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    let isChecking = false;
-    const checkNotifications = async () => {
-      if (isChecking) return;
-
+    const checkInstanceAndNotifications = async () => {
       try {
-        isChecking = true;
+        const isAuthorized = await checkInstanceAuthStatus(
+          idInstance,
+          apiTokenInstance
+        );
+        if (!isAuthorized) {
+          setIsAuthenticated(false);
+          alert("Instance is unauthorized. Please re-authenticate.");
+          return;
+        }
+
         const notification = await receiveNotification(
           idInstance,
           apiTokenInstance
         );
-
         if (notification && notification.body) {
           const { receiptId, body } = notification;
           if (
@@ -43,19 +53,23 @@ function App() {
             }
           }
 
-          // Delete notification after its receival
           await deleteNotification(idInstance, apiTokenInstance, receiptId);
         }
       } catch (err) {
-        console.error("Error checking notifications:", err);
-      } finally {
-        isChecking = false;
+        console.error("Error checking instance or notifications:", err);
       }
     };
 
-    const interval = setInterval(checkNotifications, 5000);
+    const interval = setInterval(checkInstanceAndNotifications, 5000);
     return () => clearInterval(interval);
-  }, [isAuthenticated, currentChat, idInstance, apiTokenInstance, addMessage]);
+  }, [
+    isAuthenticated,
+    currentChat,
+    idInstance,
+    apiTokenInstance,
+    addMessage,
+    setIsAuthenticated,
+  ]);
 
   if (!isAuthenticated) {
     return <LoginForm />;
