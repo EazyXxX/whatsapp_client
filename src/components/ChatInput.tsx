@@ -14,18 +14,18 @@ export const ChatInput: React.FC = () => {
     if (!message.trim() || !currentChat) return;
 
     try {
-      await sendMessage(
+      const sentMessage = await sendMessage(
         idInstance,
         apiTokenInstance,
         currentChat.phoneNumber,
         message
       );
-
       addMessage({
-        id: Date.now().toString(),
+        id: sentMessage?.idMessage || Date.now().toString(),
         text: message,
         timestamp: Date.now(),
         isOutgoing: true,
+        isRead: false,
       });
 
       setMessage("");

@@ -27,7 +27,7 @@ function App() {
         );
         if (!isAuthorized) {
           setIsAuthenticated(false);
-          alert("Instance is unauthorized. Please re-authenticate.");
+          alert("Instance is unauthorized. Please re-authenticate");
           return;
         }
 
@@ -37,6 +37,7 @@ function App() {
         );
         if (notification && notification.body) {
           const { receiptId, body } = notification;
+          //TODO add isRead case logic for sent messages
           if (
             body.typeWebhook === "outgoingMessageReceived" &&
             body.messageData?.typeMessage === "textMessage" &&
@@ -49,6 +50,8 @@ function App() {
                 text: body.messageData.textMessageData.textMessage,
                 timestamp: Date.now(),
                 isOutgoing: false,
+                //TODO add logic for received messages isRead status
+                isRead: true,
               });
             }
           }
