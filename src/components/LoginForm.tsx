@@ -29,8 +29,8 @@ export const LoginForm: React.FC = () => {
       if (isValid) {
         setStoreidInstance(idInstance);
         setStoreapiTokenInstance(apiTokenInstance);
+        await setInitialInstanceSettings(idInstance, apiTokenInstance);
         setIsAuthenticated(true);
-        setInitialInstanceSettings(idInstance, apiTokenInstance);
       } else {
         setError(
           "Invalid credentials. Please check your idInstance and apiTokenInstance"
