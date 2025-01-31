@@ -77,7 +77,15 @@ function App() {
 
     const interval = setInterval(checkInstanceAndNotifications, 5000);
     return () => clearInterval(interval);
-  }, [isAuthenticated, currentChat, idInstance, apiTokenInstance, addMessage, setIsAuthenticated, setMessageStatus]);
+  }, [
+    isAuthenticated,
+    currentChat,
+    idInstance,
+    apiTokenInstance,
+    addMessage,
+    setIsAuthenticated,
+    setMessageStatus,
+  ]);
 
   if (!isAuthenticated) {
     return <LoginForm />;

@@ -38,7 +38,11 @@ export const MessageList: React.FC = () => {
             <p className="break-words">{message.text}</p>
             <div className="text-xs text-gray-500 text-right mt-1">
               <div className="flex">
-              {getMessageIcon(message.isRead, message.isSent)}
+                {getMessageIcon(
+                  message.isRead,
+                  message.isSent,
+                  !message.isOutgoing
+                )}
                 {new Date(message.timestamp).toLocaleTimeString()}
               </div>
             </div>

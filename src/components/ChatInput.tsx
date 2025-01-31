@@ -25,7 +25,6 @@ export const ChatInput: React.FC = () => {
         text: message,
         timestamp: Date.now(),
         isOutgoing: true,
-        isRead: false,
       });
 
       setMessage("");

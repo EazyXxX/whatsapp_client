@@ -33,7 +33,10 @@ export const useChatStore = create<ChatStore>((set) => ({
         ? {
             ...state.currentChat,
             messages: state.currentChat.messages.map((message) =>
-              message.id === messageId ? { ...message, [statusField]: true } : message
+              // Blocking received messages status setting
+              message.id === messageId && message.isOutgoing
+                ? { ...message, [statusField]: true }
+                : message
             ),
           }
         : null,
