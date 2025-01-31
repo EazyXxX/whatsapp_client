@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useChatStore } from "../store/chatStore";
+import { getMessageIcon } from "../utils/getMessageIcon";
 
 export const MessageList: React.FC = () => {
   const { currentChat } = useChatStore();
@@ -35,9 +36,12 @@ export const MessageList: React.FC = () => {
             }`}
           >
             <p className="break-words">{message.text}</p>
-            <p className="text-xs text-gray-500 text-right mt-1">
-              {new Date(message.timestamp).toLocaleTimeString()}
-            </p>
+            <div className="text-xs text-gray-500 text-right mt-1">
+              <div className="flex">
+              {getMessageIcon(message.isRead, message.isSent)}
+                {new Date(message.timestamp).toLocaleTimeString()}
+              </div>
+            </div>
           </div>
         </div>
       ))}

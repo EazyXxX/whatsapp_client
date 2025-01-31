@@ -10,11 +10,12 @@ import {
   deleteNotification,
   checkInstanceAuthStatus,
 } from "./api/greenApi";
+import { MessageStatus, StatusField } from "./types";
 
 function App() {
   const { isAuthenticated, setIsAuthenticated, idInstance, apiTokenInstance } =
     useAuthStore();
-  const { currentChat, addMessage } = useChatStore();
+  const { currentChat, addMessage, setMessageStatus } = useChatStore();
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -25,6 +26,7 @@ function App() {
           idInstance,
           apiTokenInstance
         );
+
         if (!isAuthorized) {
           setIsAuthenticated(false);
           alert("Instance is unauthorized. Please re-authenticate");
@@ -38,20 +40,17 @@ function App() {
         if (notification && notification.body) {
           const { receiptId, body } = notification;
 
-          //NOTE Somehow, there are no notifications being received when I read my own self-sent messages.
-          // I guess that's because there are no such notifications for chatting with myrself
-          // (and I can't send messages to other accounts because of my free developer api tariff)
-          // That is sad, cause I can't test out my logic for checking 'read' messages status :(
-
-          //TODO add 'read' messages status check
-          // isRead case logic for sent messages
-          // if (
-          //   body?.typeWebhook === "outgoingMessageStatus" &&
-          //   body.status === "sent"
-          // ) {
-          //   setMessageRead(body.idMessage);
-          //   return;
-          // }
+          // isRead case logic for sent and read messages
+          if (body?.typeWebhook === "outgoingMessageStatus") {
+            switch (body.status) {
+              case MessageStatus.Sent:
+                setMessageStatus(body.idMessage, StatusField.IsSent);
+                break;
+              case MessageStatus.Read:
+                setMessageStatus(body.idMessage, StatusField.IsRead);
+                break;
+            }
+          }
 
           if (
             body.typeWebhook === "outgoingMessageReceived" &&
@@ -65,8 +64,6 @@ function App() {
                 text: body.messageData.textMessageData.textMessage,
                 timestamp: Date.now(),
                 isOutgoing: false,
-                //TODO add logic for received messages 'read' status
-                isRead: true,
               });
             }
           }
@@ -80,14 +77,7 @@ function App() {
 
     const interval = setInterval(checkInstanceAndNotifications, 5000);
     return () => clearInterval(interval);
-  }, [
-    isAuthenticated,
-    currentChat,
-    idInstance,
-    apiTokenInstance,
-    addMessage,
-    setIsAuthenticated,
-  ]);
+  }, [isAuthenticated, currentChat, idInstance, apiTokenInstance, addMessage, setIsAuthenticated, setMessageStatus]);
 
   if (!isAuthenticated) {
     return <LoginForm />;

@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { Chat, Message } from "../types";
+import { Chat, Message, StatusField } from "../types";
 
 interface ChatStore {
   currentChat: Chat | null;
   setCurrentChat: (phoneNumber: string) => void;
   addMessage: (message: Message) => void;
-  setMessageRead: (messageId: string) => void;
+  setMessageStatus: (messageId: string, statusField: StatusField) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -27,13 +27,13 @@ export const useChatStore = create<ChatStore>((set) => ({
         : null,
     }));
   },
-  setMessageRead: (messageId: string) => {
+  setMessageStatus: (messageId: string, statusField: StatusField) => {
     set((state) => ({
       currentChat: state.currentChat
         ? {
             ...state.currentChat,
             messages: state.currentChat.messages.map((message) =>
-              message.id === messageId ? { ...message, isRead: true } : message
+              message.id === messageId ? { ...message, [statusField]: true } : message
             ),
           }
         : null,
