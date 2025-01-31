@@ -36,3 +36,5 @@ Or this command to run the app in develop mode:
 ```
 npm run dev
 ```
+
+It is important to create a .env file in project's root directory and to add a VITE_API_URL variable inside with the apiUrl value provided by GreenAPI instance. Otherwise, you wouldn't be able to login. 
